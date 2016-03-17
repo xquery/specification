@@ -20,3 +20,4 @@ editors' repositories:
 
 If you're interested in contributing to the specification, you can
 do so by way of [a pull request](https://help.github.com/articles/creating-a-pull-request).
+See also [Travis CI notes](CI.adoc).
