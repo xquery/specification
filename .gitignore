@@ -1,0 +1,12 @@
+/build/
+
+,*
+
+/langspec/xproc20/changelog.html
+/langspec/xproc20/diff.html
+
+/langspec/xproc20-steps/changelog.html
+/langspec/xproc20-steps/diff.html
+
+/schema/*.rng
+
