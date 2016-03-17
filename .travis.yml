@@ -1,7 +1,10 @@
 language: java
 script: make
+sudu: false
+
 after_success:
 - ".travis/publish-spec.sh"
+
 env:
   global:
   - secure: o+vlbHekxsIKxIL9dXdp0Cql4O0lJPxeGqIgHD+YvZXILPR2yUe+jVggzFfVFkmd/tCATkWXcdCRh9XsuIwZcErxG5KF5wqYjk3SnSi4GHshH/+kWjCtyY8MKKr0eRbFbUuYg3q4RdkDT7JAdwKDjik3GiLX5QCRq4qo+gMw37TmINbSTUU5+8w0YIssH9VneU42pgeOFXArWntRJ+bRA3RTWrbLOMwj6uXz/N7UYbp2osCReYo7Me/+Qva0b2hJZFNtIkbeHWvsTKaqpwltZRL/ThAQ49LMZq+Hq/pO81RsqtiSQu4EwT7phSuSqRi0Rc0YVyYUisgGidaTNbMjRg8Zix4LxXAuvWCyRLVnHTW4/3K6mw75f8YCALAcrwMLLYV6pg25Bl5PBwZcCy9qiumLuHy6kAoXuVVphOXiiAe+dCTuh213o6uHzfYNolwYOSqS4ZRbEm/WxEzMYf8ds4N7+OcM63ZUCfZ9X7p1YFz+kssWwKXYrpOduDDWuGmVus+nUbTRhK1XHB/i0kfBr3yA875tyuC6KLJ9Y1dDYJpbYGfmvsbX7aA4u6ykXpRemCvKzYZp8mXl4SXlIzzxvMyFHYCEgQaYNwrqDgX81Xg1FCp33/HE3WkJ/v1N29g0+PTnyzx5WV1Oi9x5eTy01AtNP4fRAH7U1+Y8zHNyabk=
