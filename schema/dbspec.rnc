@@ -133,6 +133,51 @@ db.markup.inlines |= db.port
 
 # ======================================================================
 
+db.xpstep.role.attribute = attribute role { text }
+db.xpstep.attlist =
+   db.xpstep.role.attribute?
+ & db.common.attributes
+ & db.common.linking.attributes
+
+db.xpstep =
+   element step {
+      db.code.attlist, (db.programming.inlines | db._text)*
+   }
+
+db.markup.inlines |= db.xpstep
+
+# ======================================================================
+
+db.xpinput.role.attribute = attribute role { text }
+db.xpinput.attlist =
+   db.xpinput.role.attribute?
+ & db.common.attributes
+ & db.common.linking.attributes
+
+db.xpinput =
+   element input {
+      db.code.attlist, (db.programming.inlines | db._text)*
+   }
+
+db.markup.inlines |= db.xpinput
+
+# ======================================================================
+
+db.xpoutput.role.attribute = attribute role { text }
+db.xpoutput.attlist =
+   db.xpoutput.role.attribute?
+ & db.common.attributes
+ & db.common.linking.attributes
+
+db.xpoutput =
+   element output {
+      db.code.attlist, (db.programming.inlines | db._text)*
+   }
+
+db.markup.inlines |= db.xpoutput
+
+# ======================================================================
+
 [
    db:refname [ "component" ]
    db:refpurpose [ "Describes a component" ]

@@ -41,6 +41,13 @@ div.title           { margin-top: 0.5em;
 .rfc2119           { font-weight: bold;
                    }
 
+dt.callout a,
+dt.callout a:visited,
+dt.callout a:link {
+    text-decoration: none;
+    color: inherit;
+}
+
 div.editorial      { margin-left: 40px;
                      margin-right: 40px;
 		     border: solid 1px #AAAAAA;
