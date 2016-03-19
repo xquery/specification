@@ -217,8 +217,20 @@
     </xsl:with-param>
   </xsl:call-template>
 </xsl:template>
-  
+
 <xsl:template match="db:port">
+  <xsl:call-template name="t:inline-monoseq"/>
+</xsl:template>
+
+<xsl:template match="db:step">
+  <xsl:call-template name="t:inline-monoseq"/>
+</xsl:template>
+
+<xsl:template match="db:input">
+  <xsl:call-template name="t:inline-monoseq"/>
+</xsl:template>
+
+<xsl:template match="db:output">
   <xsl:call-template name="t:inline-monoseq"/>
 </xsl:template>
 
