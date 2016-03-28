@@ -1,0 +1,1384 @@
+<specification xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:cs="http://www.w3.org/XML/XProc/2006/04/components#" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xi="http://www.w3.org/2001/XInclude" class="ed" version="5.0-extension w3c-xproc">
+  <info>
+    <title>XProc 2.0: An XML Pipeline Language</title>
+    <w3c-shortname>xproc20</w3c-shortname>
+    <!-- defaults to date formatted <pubdate>2014-12-18</pubdate> -->
+
+    <bibliorelation role="x-no-errata" type="references" xlink:href="http://www.w3.org/XML/2010/xproc-errata.html">errata</bibliorelation>
+    <bibliorelation role="x-no-translations" type="references" xlink:href="http://www.w3.org/2003/03/Translations/byTechnology?technology=xproc">translations</bibliorelation>
+
+    <bibliorelation type="isformatof" xlink:href="xproc20.xml">XML</bibliorelation>
+<!--
+    <bibliorelation type="isformatof" xlink:href="changelog.html">ChangeLog</bibliorelation>
+-->
+
+<!--
+    <bibliorelation type="replaces" xlink:href="http://www.w3.org/TR/2010/PR-xproc-20100309/"/>
+    <bibliorelation type="replaces" xlink:href="http://www.w3.org/TR/2010/WD-xproc-20100105/"/>
+    <bibliorelation type="replaces" xlink:href="http://www.w3.org/TR/2009/CR-xproc-20090528/"/>
+-->
+    <!--
+    <bibliorelation type="replaces" xlink:href="http://www.w3.org/TR/2008/CR-xproc-20081126/"/>
+    <bibliorelation type="replaces" xlink:href="http://www.w3.org/TR/2008/WD-xproc-20080814/"/>
+      <bibliorelation type="replaces" xlink:href="http://www.w3.org/TR/2007/WD-xproc-20071129/"/>
+      <bibliorelation type="replaces"
+		xlink:href="http://www.w3.org/TR/2007/WD-xproc-20070920/"/>
+<bibliorelation type="replaces"
+		xlink:href="http://www.w3.org/TR/2007/WD-xproc-20070706/"/>
+<bibliorelation type="replaces"
+		xlink:href="http://www.w3.org/TR/2007/WD-xproc-20070405/"/>
+<bibliorelation type="replaces"
+		xlink:href="http://www.w3.org/TR/2006/WD-xproc-20061117/"/>
+-->
+    <authorgroup>
+      <author>
+        <personname>Norman Walsh</personname>
+        <affiliation>
+          <orgname>MarkLogic Corporation</orgname>
+        </affiliation>
+        <email>norman.walsh@marklogic.com</email>
+      </author>
+      <author>
+        <personname>Alex Milowski</personname>
+        <affiliation>
+          <orgname>Invited expert</orgname>
+        </affiliation>
+        <email>alex@milowski.org</email>
+      </author>
+      <author>
+        <personname>Henry S. Thompson</personname>
+        <affiliation>
+          <orgname>University of Edinburgh</orgname>
+        </affiliation>
+        <email>ht@inf.ed.ac.uk</email>
+      </author>
+    </authorgroup>
+
+<abstract>
+<para>This specification describes the syntax and semantics of
+<citetitle>XProc 2.0: An XML Pipeline Language</citetitle>, a language for
+describing operations to be performed on documents.</para>
+
+<para>An XML Pipeline specifies a sequence of operations to be
+performed on documents. Pipelines generally accept
+documents as input and produce documents as output.
+Pipelines are made up of simple steps which
+perform atomic operations on documents and constructs similar to
+conditionals, iteration, and exception handlers which control which
+steps are executed.</para>
+</abstract>
+
+<legalnotice role="status">
+
+<para><emphasis>This section describes the status of this document at
+the time of its publication. Other documents may supersede this
+document. A list of current W3C publications and the latest revision
+of this technical report can be found in the
+<link xlink:href="http://www.w3.org/TR/">W3C technical reports index</link> at
+http://www.w3.org/TR/.</emphasis></para>
+
+<para>Publication as a First Public Working Draft does not imply
+endorsement by the W3C Membership. This is a draft document and may be
+updated, replaced or obsoleted by other documents at any time. It is
+inappropriate to cite this document as other than work in
+progress.
+</para>
+
+<para>This document is an editor's draft without normative standing.
+<!--This document is a
+product of the
+<link xlink:href="http://www.w3.org/XML/Processing/" >XML Processing Model
+Working Group</link>
+as part of the W3C
+<link xlink:href="http://www.w3.org/XML/Activity">XML Activity</link>.
+This draft is a first attempt to address some of the requirements of
+<biblioref linkend="use-cases"/>. It is in many ways substantially incomplete.
+The Working Group is publishing it in order to establish an intended direction
+and to provide an official opportunity for comment.-->
+</para>
+
+<para>Please report errors in this document by
+<link xlink:href="https://github.com/xproc/specification/issues">raising
+issues</link> on the
+<link xlink:href="https://github.com/xproc/specification">specification
+repository</link>.
+Alternatively, you may report errors in this document to the public
+mailing list
+<link xlink:href="mailto:public-xml-processing-model-comments@w3.org">public-xml-processing-model-comments@w3.org</link> (public
+<link xlink:href="http://lists.w3.org/Archives/Public/public-xml-processing-model-comments/">archives</link> are available).</para>
+
+<!--
+<para>There is an
+<link xlink:href="http://www.w3.org/XML/XProc/2010/02/ir.html">Implementation
+Report for XProc 1.0</link>. It documents the performance of implementations
+against the
+<link xlink:href="http://tests.xproc.org/">XProc 1.0 Test Suite</link>.
+At this time, there are no such reports for XProc 2.0.
+</para>
+-->
+
+<para>This document was produced by a group operating under the <link xlink:href="http://www.w3.org/Consortium/Patent-Policy-20040205/">5
+February 2004 W3C Patent Policy</link>. W3C maintains a <link xlink:href="http://www.w3.org/2004/01/pp-impl/38398/status">public
+list of any patent disclosures</link> made in connection with the
+deliverables of the group; that page also includes instructions for
+disclosing a patent. An individual who has actual knowledge of a
+patent which the individual believes contains <link xlink:href="http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential">Essential
+Claim(s)</link> must disclose the information in accordance with <link xlink:href="http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure">section
+6 of the W3C Patent Policy</link>.</para>
+
+<para>This document is governed by the
+<link xml:id="w3c_process_revision" xlink:href="http://www.w3.org/2005/10/Process-20051014/">14 October 2005 W3C Process Document</link>.</para>
+</legalnotice>
+</info>
+
+<section xml:id="introduction">
+<title>Introduction</title>
+
+<para>An XProc Pipeline specifies a set of operations to be
+performed on a collection of input documents. Pipelines take documents
+as their input and produce documents as their output.</para>
+
+<para>This document introduces an entirely new syntax for XProc:</para>
+
+<itemizedlist>
+<listitem><para>It is a text-based syntax in UTF-8.</para></listitem>
+<listitem>
+<para>It is in some ways similar to XQuery; parts of the language may
+in fact end up being borrowed from or extensions of the XQuery 3.1
+grammar.</para>
+</listitem>
+<listitem>
+<para>It is inspired by XProc 1.0; it is attempting to solve the
+problems outlined in the requirements document for XProc 2.0.</para>
+</listitem>
+<listitem>
+<para>We are hoping that this design will present fewer and easier
+conceptual hurdles than the XML syntax.</para>
+</listitem>
+</itemizedlist>
+
+<para>XProc remains a data flow language. There are steps, indivisible
+black boxes of computation, connected together into a graph. The
+connections are the bindings between the output(s) of one step and the
+input(s) of another.</para>
+
+<para>Step declarations (see <xref linkend="step-declarations"/>), resemble function
+declarations. The use of a step resembles a function invocation. This
+has an important consequence: the inputs and outputs are both named
+and ordered. If the declaration for the <step>xslt</step> step has two
+inputs, <input>source</input> and <input>stylesheet</input>, declared
+in that order, then it is coherent to speak of them both by name and
+by ordinal position: the <input>source</input> input is first, the
+<input>stylesheet</input> input is second.
+</para>
+</section>
+
+<section xml:id="terminology">
+<title>Terminology</title>
+
+<para>All of the terminology in this document is subject to revision.
+Some of the terms are better and more clearly defined than others. We
+present a list of terms here so that you will recognize them when they
+first appear. Most are explained in more detail, but in this draft,
+not always at the point of first use.</para>
+
+<para>Some terms, such as <port>port</port>, denote the same concept
+in XProc 2.0 that they did in XProc 1.0. For conciseness, we use those
+terms in this draft without further explanation.
+</para>
+
+<glosslist>
+<glossentry>
+<glossterm>pipeline</glossterm>
+<glossdef>
+<para>A pipeline is a collection operations to be performed on a
+set of input documents. Each pipeline consists of <glossterm baseform="step">steps</glossterm>
+and <glossterm baseform="connection">connections</glossterm> between them.
+The connections may be strictly linear, they may branch (many steps connected
+to the output of a single step), or they may join (a single step connected
+to the output of many steps). A pipeline is consequently a directed, acyclic
+graph. A pipeline can contain entirely disjoint subgraphs.</para>
+</glossdef>
+</glossentry>
+<glossentry>
+<glossterm>step</glossterm>
+<glossdef>
+<para>A step is a unit of operation in a pipeline. From the perspective of the
+pipeline in which it occurs, it is an atomic operation.
+</para>
+</glossdef>
+</glossentry>
+<glossentry>
+<glossterm>connection</glossterm>
+<glossdef>
+<para>A connection occurs between two steps where the output of one step
+is consumed by the input of another. Steps may have zero or more connections,
+if they do have connections, they may have one or more connection to any number
+of steps.
+</para>
+</glossdef>
+</glossentry>
+<glossentry>
+<glossterm>flow</glossterm>
+<glossdef>
+<para>A flow is a portion of the data flow graph that the pipeline
+represents. Writing programs in a text file is inherently linear while
+graphs are not. From a graph theoretic perspective, the graph is being
+cut into a set of flows. If you don’t have a background in graph
+theory, don’t worry about that bit, it’s not important that you
+understand it in those terms.
+</para>
+</glossdef>
+</glossentry>
+<glossentry>
+<glossterm>step chain</glossterm>
+<glossdef>
+<para>A step chain is a strictly linear sequence of steps.
+Step chains are the most significant unit of work in a pipeline.
+Syntactically, a step chain is represented with the arrow
+operator (i.e., <symbol>-&gt;</symbol> or <symbol>→</symbol>, U+2192).
+</para>
+<para>The left hand side of an arrow is always a step or an input binding.
+The right hand side of an arrow is always a step, an input binding for
+the next step, or a block expression.</para>
+</glossdef>
+</glossentry>
+<glossentry>
+<glossterm>input binding</glossterm>
+<glossdef>
+<para>Every step has an input binding; it is the set of input ports
+from which the step will read to get its input. The simplest input
+binding is an item. A binding can be anonymous, in which case it binds
+to the first input port, or it can be named, in which case it binds to
+the named input port. Assuming that <varname>$in</varname> is a
+variable bound to a document:</para>
+
+<itemizedlist>
+<listitem>
+<para><code>$in →</code> binds <varname>$in</varname> to the first
+input of the step on the right hand side of the arrow.</para>
+</listitem>
+<listitem>
+<para><code>source=$in →</code> binds <varname>$in</varname> to the
+<port>source</port> input of the step on the right hand side of the
+arrow.</para>
+</listitem>
+</itemizedlist>
+
+<para>If a step has more than one input, the set of inputs is enclosed in
+square brackets:</para>
+
+<itemizedlist>
+<listitem>
+<para><code>[$in,$style] →</code> binds <varname>$in</varname> to the first input
+and <varname>$style</varname> to the second
+input of the step on the right hand side of the arrow.</para>
+</listitem>
+<listitem>
+<para><code>[source=$in, stylesheet=$style] →</code> binds
+<varname>$in</varname> to the <port>source</port> input and <varname>$style</varname>
+to the <port>stylesheet</port> input on the right hand side of the arrow.</para>
+</listitem>
+</itemizedlist>
+
+<para>In an input binding, a literal quoted string is interpreted as a
+URI reference with the semantic that the URI is dereferenced and the document
+returned is used as the input.</para>
+
+<itemizedlist>
+<listitem>
+<para><code>"document.xml" →</code> binds the contents of
+<uri>document.xml</uri> to the first input of the step on the right
+hand side of the arrow.</para>
+</listitem>
+</itemizedlist>
+</glossdef>
+</glossentry>
+
+<glossentry>
+<glossterm>output binding</glossterm>
+<glossdef>
+<para>Steps have outputs that can be accessed by output bindings or
+implictly as via ordinal bindings.
+</para>
+<para>In an input binding between two steps or a block expression, the
+output bindings of the preceding step are accessed ordinally,
+<varname>$1</varname> is the first output binding,
+<varname>$2</varname> is the second, etc.
+</para>
+
+<note><para>At the moment, it isn’t possible to refer to output bindings of the
+preceding step by name.</para></note>
+
+<para>At the end of a step chain, the output binding operator
+(<symbol>&gt;&gt;</symbol> or <symbol>≫</symbol>, U+226B), assigns
+outputs to variables:
+</para>
+
+<itemizedlist>
+<listitem>
+<para><code>≫ $out</code> binds <varname>$out</varname> to the
+document sequence that appears on the first output port of the step it
+follows.
+</para>
+</listitem>
+<listitem>
+<para><code>≫ result=$out</code> binds <varname>$out</varname> to the
+<port>result</port> output of the step it follows.</para>
+</listitem>
+</itemizedlist>
+
+<para>If a step has more than one output, the set of outputs can be
+enclosed in square brackets:</para>
+
+<itemizedlist>
+<listitem>
+<para><code>≫ [$out,$chunks]</code> binds <varname>$out</varname> to
+the document sequence that appears on the first output port of the
+step it follows and <varname>$chunks</varname> to the documents that
+appear on the second output port.
+</para>
+</listitem>
+<listitem>
+<para><code>≫[secondary=$chunks,result=$out]</code> binds
+<varname>$out</varname> to the documents on the <port>result</port>
+output port and <varname>$chunks</varname> to the documents on the
+<port>secondary</port> output port.
+</para>
+</listitem>
+</itemizedlist>
+</glossdef>
+</glossentry>
+
+<glossentry>
+<glossterm>variables</glossterm>
+<glossdef>
+<para>A variable, <varname>$varname</varname> is a lexically scoped
+reference to a sequence of XDM items or an output port. The
+distinction is not significant in everyday usage, pipeline authors can
+always think of a variable as denoting a sequence of items. However,
+from an implementation perspective, an output port variable represents
+a connection in the graph to every step that references that variable.
+An analysis of input bindings and output bindings may allow a
+processor to build an entirely streaming implementation of (some)
+pipelines that never need to reify output port variables.</para>
+</glossdef>
+</glossentry>
+
+<glossentry>
+<glossterm>block expressions</glossterm>
+<glossdef>
+<para>A block expression is an inlined expression that can perform
+some relatively small amount of computation. It’s possible to describe
+the XProc flow language without block expressions; every block
+expression can be turned into a step that implements the expression.
+But that would be very tedious in practice.
+</para>
+
+<note><para>The expression language inside the block expression is
+imagined as a subset of XQuery 3.1. The exact nature of the subset is
+still being discussed. The canonical expression is an
+<code>if</code>/<code>then</code>/<code>else</code> test.</para>
+</note>
+
+<para>Block expressions occupy the position of a step in a step chain,
+consequently they may consume the outputs from the immediately
+preceding step (if there is one), and they may produce outputs.</para>
+
+<para>Within a block expression, the syntax of the output binding
+operator is extended slightly. The outputs of the block expression are
+referenced ordinally using an <symbol>@</symbol>-sign;
+<code>≫ @1</code> writes to the first output, <code>≫ @2</code> writes
+to the second output, etc.</para>
+</glossdef>
+</glossentry>
+</glosslist>
+</section>
+
+<section xml:id="understanding-xproc">
+<title>Understanding XProc 2.0</title>
+
+<para>A flow is a description of the data flow graph. On the left and
+right sides of a chain of steps, we use structuring and de-structuring
+to assign ports to variables. The result is a variable that
+(logically) denotes a sequence of items.</para>
+
+<para>Steps have declarations but are not described otherwise within
+the flow. An implementation can associate a step signature with an
+implementation in their domain language by matching function
+signatures.</para>
+
+<para>Step invocations can be chained together by ordering them in a
+sequence connected by the arrow operator (i.e., <symbol>-&gt;</symbol> or
+<symbol>→</symbol> U+2192). A step chain must fully specify the input
+port bindings along with any required options.</para>
+
+<para>Let’s begin with an example pipeline. This is the “example 3”
+pipeline from the XProc 1.0 specification.</para>
+
+<example>
+<title>An Example</title>
+<programlisting>xproc version = "2.0"; <co xml:id="ex-decl"/>
+
+(: This example is from the XProc 1.0 specification (example 3). :)
+
+ inputs $source as document-node(); <co xml:id="ex-input"/>
+outputs $result as document-node(); <co xml:id="ex-output"/>
+
+$source → { if (xs:decimal($1/*/@version) &lt; 2.0) <co xml:id="ex-block"/>
+            then [$1,"v1schema.xsd"] → validate-with-xml-schema() ≫ @1 <co xml:id="ex-at-1"/>
+            else [$1,"v2schema.xsd"] → validate-with-xml-schema() ≫ @1}
+        → [$1,"stylesheet.xsl"] → xslt() <co xml:id="ex-block-output"/>
+≫ $result <co xml:id="ex-final-output"/></programlisting>
+</example>
+
+<calloutlist>
+<callout arearefs="ex-decl">
+<para>The declaration that begins an XProc 2.0 pipeline
+</para>
+</callout>
+<callout arearefs="ex-input">
+<para>The pipeline inputs can be declared externally
+</para>
+</callout>
+<callout arearefs="ex-output">
+<para>So can the outputs
+</para>
+</callout>
+<callout arearefs="ex-block">
+<para>Inside this block <varname>$1</varname> refers to the first input, in this case
+<varname>$source</varname>.
+</para>
+</callout>
+<callout arearefs="ex-at-1">
+<para>Using <varname>@1</varname> writes the validated result to the first
+output of this block expression
+</para>
+</callout>
+<callout arearefs="ex-block-output">
+<para>The first (in this case only) output from the block expression
+is used as the first input to the <step>xslt</step> step.
+</para>
+</callout>
+<callout arearefs="ex-final-output">
+<para>The final output binding writes the result of the pipeline to
+the <varname>$result</varname> output.
+</para>
+</callout>
+</calloutlist>
+</section>
+
+<section xml:id="step-chains">
+<title>Step Chains</title>
+
+<para>A step chain is a sequence of step invocations separated by the
+chain operator (i.e., <symbol>-&gt;</symbol> or <symbol>→</symbol>
+U+2192). On the left of the chain operator is always a preceding step
+or input bindings. On the right must be a step invocation, a block
+expression, or an optional output binding.
+</para>
+
+<para>The simplest input binding is a single expression that evaluates
+to a sequence of one or more items. For example, the document(s) bound
+to <varname>$in</varname> can be an input binding for the XInclude
+step:</para>
+
+<programlisting>$in → xinclude()</programlisting>
+
+<para>If a step takes multiple inputs, the individual bindings must be
+surrounded by square brackets:</para>
+
+<programlisting>["document.xml", "style.xsl"] → xslt()</programlisting>
+
+<para>In a binding with multiple inputs, the first input is bound to
+the first input port (in declaration order), the second input to the
+second port, etc. If necessary, or for clarity, a binding may be
+preceded by a name assignment that explicitly names a port:</para>
+
+<programlisting>[source="document.xml", stylesheet="style.xs"] → xslt()</programlisting>
+
+<para>If positional and name references are mixed, all positional
+references must precede the first named reference.</para>
+
+<para>Steps produce some number of outputs on named ports. The outputs
+of a step invocation immediately preceding the chain operator are
+available as numbered inputs <varname>$1</varname>,
+<varname>$2</varname>, etc. whose order is the order of the output
+declarations on the step. For example, the <step>xslt</step> step has
+two output ports, <output>result</output> and <port>secondary</port>,
+declared in that order. Following an <step>xslt</step> step,
+<varname>$1</varname> refers to the <output>result</output> port and
+<varname>$2</varname> refers to the <port>secondary</port>
+port.</para>
+
+<programlisting>$in → xinclude() → [$1,"stylesheet.xsl"] → xslt()</programlisting>
+
+<para>A reference to an ordinal port that does not exist produces an
+empty sequence of documents.</para>
+
+<note>
+<para>This is an explicit relaxation of the rules in XProc 1.0 where
+all bindings had to be composed statically, exactly, and perfectly. It
+facilitates the use of block expressions where the number of outputs
+may not always be the same. This explicitly relaxes the rule that all
+of the outputs from a conditional must be identical.</para>
+</note>
+
+<note>
+<para>It may be necessary to provide a function or other mechanism for
+testing at runtime if a reference to <varname>$3</varname> (for
+example) is empty because the third output port produced an empty
+sequence or because there <emphasis>was no</emphasis> third output
+port.</para>
+</note>
+
+<para>If two steps are connected together without an intervening input
+binding, the implicit input binding is that the ports are connected
+ordinally:</para>
+
+<programlisting>→ [$1,$2,$3,…$n] →</programlisting>
+
+<para>So this flow:</para>
+
+<programlisting>$in → xinclude() → store("included.xml")</programlisting>
+
+<para>is equivalent to this one:</para>
+
+<programlisting>$in → xinclude() → [$1] → store("included.xml")</programlisting>
+</section>
+
+<section xml:id="inputs">
+<title>Inputs</title>
+
+<para>Inputs…</para>
+
+<section xml:id="uri-inputs">
+<title>URI inputs</title>
+
+<para>A literal string in a port binding is a URI reference and the
+resource identified by the URI will be loaded and bound to the
+port.</para>
+
+<programlisting>"doc.xml" → xinclude()</programlisting>
+
+<para>An input can also be a sequence of documents using matching
+parens:</para>
+
+<programlisting>("d1.xml","d2.xml","d3.xml") → xinclude()</programlisting>
+
+<para>Expressions and literals may be mixed to produce new sequences:</para>
+
+<programlisting>($in,"doc.xml") → xinclude()</programlisting>
+
+<para>Step inputs can be combined:</para>
+
+<programlisting>[collection=($main,$secondary), query="query.xq"] → xquery()</programlisting>
+
+<para>and can be used in more complex expressions:</para>
+
+<programlisting>[$in,"stylesheet.xsl"] → xslt() → [($1,$2),"query.xq"] → xquery()</programlisting>
+</section>
+
+<section xml:id="literal-inputs">
+<title>Literal inputs</title>
+
+<para>A literal can be specified using a media-type specific data
+constructor. For example, a data constructor may construct a JSON
+object by include the object within the curly braces:</para>
+
+<programlisting>data "application/json" {
+   {
+      name: "Alex",
+      favoriteColor: "orange"
+   }
+}</programlisting>
+
+<para>JSON array construction is also allowed:</para>
+
+<programlisting>data "application/json" { [ 1,2,3,4] }</programlisting>
+
+<para>An XML element may be constructed by embedding the literal
+within the curly braces:</para>
+
+<programlisting>data "application/xml" { &lt;doc&gt;&lt;title&gt;A test&lt;/title&gt;&lt;/doc&gt; }</programlisting>
+
+<para>An HTML element can be similarly constructed:</para>
+
+<programlisting>data "text/html" {
+    &lt;!DOCTYPE html&gt;
+    &lt;html&gt;
+    &lt;head&gt;&lt;title&gt;Template&lt;/title&gt;
+    &lt;link type="text/css" href="style.css"&gt;
+    &lt;/head&gt;
+    &lt;body&gt;…&lt;/body&gt;
+    &lt;/html&gt;
+}</programlisting>
+
+<para>Text may also be directly embedded:</para>
+
+<programlisting>data "text/plain" { "Now is the time for all good XProc …" }</programlisting>
+
+<note>
+<para>AVT expansion and curly brace escaping are unspecified here.</para>
+</note>
+
+<para>Processors are free to extend literal construction with the
+constraint that the format can be unambiguously embedded within curly
+braces.</para>
+</section>
+</section>
+
+<section xml:id="output-bindings">
+<title>Output bindings</title>
+
+<para>The output binding operator (i.e., '&gt;&gt;' or
+<literal>≫</literal> U+226B) takes a step chain or port variable
+reference on the left hand side and binds the output to the right hand
+side (i.e., a port variable reference, a URI reference, or an ordered
+port ordinal.). The output binding operator is used to construct more
+complex chains of data flows, store results, or write to output ports
+for returning results.</para>
+
+<para>The symbol “≫” is evocative of the “append” operation familiar
+from many command-line systems. An output binding appends data to its
+right hand side in the sense that it causes data to be sent there and
+if several chains cause data to be sent to the same place, the effect
+will be logical appending.</para>
+
+<para>The identity assignment is performed by simply binding the input
+to the output:</para>
+
+<programlisting>$in ≫ $out</programlisting>
+
+<para>The result is all the input on <varname>$in</varname> is sent to
+the output port <varname>$out</varname> as it flows through the
+graph.</para>
+
+<para>A literal URI reference implies a document store:</para>
+
+<programlisting>"doc.xml" → xinclude() ≫ "included.xml"</programlisting>
+
+<para>In the case of implicit store, if the same output URI is used
+more than once, the result of sending a sequence there is
+implementation defined (e.g., the last document written).</para>
+
+<para>If the outputs need to be referenced as inputs elsewhere, they
+can be assigned to variables:</para>
+
+<programlisting>$in → xinclude() ≫ $included
+[$included,"schema.xsd"] → validate-with-xml-schema()
+[$included,"stylesheet.xsl"] → xslt() ≫ [result=$out,secondary=$chunks]</programlisting>
+
+<para>Variables assigned in this way can be used like any other
+variable in expressions, but the implementation must enforce the
+following semantics:</para>
+
+<orderedlist>
+<listitem>
+<para>Any reference to the variable must return all the documents
+written by all of the step chains that write to that variable</para>
+</listitem>
+<listitem>
+<para>All of the documents written by any single step chain must be
+adjacent in the resulting sequence and must be in the order written by
+the ultimate step in that chain.</para>
+</listitem>
+<listitem>
+<para>Any referencial circularity raises a static error</para>
+</listitem>
+</orderedlist>
+<para>For example, the following has two documents flowing through
+<varname>$included</varname>:</para>
+
+<programlisting>"doc1.xml" → xinclude() ≫ $included
+"doc2.xml" → xinclude() ≫ $included
+$included → validate-with-xml-schema()</programlisting>
+
+<para>The first two step chains are independent and the processor is
+free to run them in either order, or in parallel. However, what is
+passed to <literal>validate-with-xml-schema()</literal> when the
+<varname>$included</varname> variable is referenced
+<emphasis>must</emphasis> be all of the documents written by the first
+chain followed by all of the documents written by the second, or vice
+versa.</para>
+
+<para>The names of output ports can be omitted in which case the
+assignments are taken in declaration order. For example, the XSLT step
+declares the <output>result</output> port first and the
+<port>secondary</port> port second. An explicit set of
+bindings:</para>
+
+<programlisting>[source=$in,stylesheet="stylesheet.xsl"] → xslt() ≫ [result=$out,secondary=$chunks]</programlisting>
+
+<para>can be shortened to:</para>
+
+<programlisting>[$in,"stylesheet.xsl"] → xslt() ≫ [$out,$chunks]</programlisting>
+
+<para>Within any context, every declared output port has an unnamed
+ordinal. Some expressions (e.g. block expressions) have implicitly
+declared output ports.</para>
+
+<para>The ordinals can be referenced by name as <literal>@1</literal>,
+<literal>@2</literal>, etc.</para>
+
+<programlisting>$in → { if ($1/doc/cheese='cheddar')
+        then consume() ≫ @1
+        else reject() ≫ @1 }
+     ≫ $out</programlisting>
+
+</section>
+
+<section xml:id="step-declarations">
+<title>Step Declarations and Invocations</title>
+
+<para>All steps are declared as external procedures with any number of
+named inputs and outputs.</para>
+
+<programlisting>step my:computation()
+ inputs $source as document-node(),
+outputs $result as xs:int*;</programlisting>
+
+<para>Steps are always declared with qualified name. When they are are
+invoked, a default namespace may be assumed by the processor.</para>
+
+<para>Steps may have any number of options that can be optional and defaulted:</para>
+
+<programlisting>step p:xslt(
+  $initial-mode as xs:string ?,
+  $template-name as xs:string?,
+  $output-base-uri as xs:string?,
+  $parameters as map()? = (),
+  $version as xs:string = "2.0"
+)
+   inputs $source as document-node()+,
+          $stylesheet as document-node()
+   outputs $result as document-node()?,
+           $secondary as document-node()*;</programlisting>
+
+<para>All required options must be listed first in the declaration.</para>
+
+<para>Options values are specified on invocation. Any unnamed option
+values are matched in declaration order. Afterwards, all parameters
+must be specified with a name.</para>
+
+<para>For example:</para>
+
+<programlisting>xslt("toc",$output-base-uri=base-uri($source))</programlisting>
+
+<para>invokes the <literal>xslt</literal> step with the option value
+"toc" for <varname>$initial-mode</varname> and explicitly named value
+for <varname>$output-base-uri</varname> but does not specify a value
+for <varname>$template-name</varname>. The value of
+<varname>$version</varname> is defaulted to "2.0".</para>
+</section>
+
+<section xml:id="block_expressions">
+<title>Block Expressions</title>
+
+<para>A step chain may contain a block expression. A block expression
+always has a ordinal set of inputs and outputs. The inputs are
+assigned from the context of the expression in the chain. The outputs
+are assigned based on the flow contained within the expression.</para>
+<para>A block expression is enclosed within a set of curly brackets and
+contains any number of step chains or other statements.</para>
+</section>
+
+<section xml:id="conditionals">
+<title>Conditionals</title>
+
+<para>A conditional may be placed within a step chain when surrounded
+by curly brackets:</para>
+
+<programlisting>$in → { if ($1/*/@version eq "v1.0")
+        then [$1,"crummy.xsl"] → xslt() ≫ @1
+        else [$1,"better.xsl"] → xslt() ≫ @1 }
+    ≫ $out</programlisting>
+
+<para>When the if/then expression is invoked, it acts as a guard on
+the flows contained within the clause. Only one of the flows will
+execute.</para>
+
+<para>The outputs of the block are completely determined by the flows
+executed. If they do not append any output to the ordinal outputs of
+the block expression, the expression will not have any output. That
+is, there is no implicit chaining of outputs.</para>
+
+<note>
+<para>What functions are available in the test conditional? Can I use
+<step>last</step> or <step>position</step> for example?</para>
+</note>
+</section>
+
+<section xml:id="variables">
+<title>Variables</title>
+
+<para>Within curly bracketed expressions, a let clause may be use to
+assign variables to values:</para>
+
+<programlisting>$in → {
+   let $version := xs:int($1/*/@version) {
+      if ($version &lt; 2)
+      then [$1,"schema1.xsd"] → validate-with-xml-schema() ≫ @1
+      else if ($version &lt; 3)
+      then [$1,"schema2.xsd"] → validate-with-xml-schema() ≫ @1
+      else fail("No schema available")
+   }
+} ≫ $out</programlisting>
+
+<para>The variables share the same scope as port variable references but
+cannot be used within append operators on the right side.</para>
+
+<para>For example, this is not legal:</para>
+
+<programlisting>$in → {
+   let $dates := xs:dateTime($1/*/updated) {
+     [$1,"schema1.xsd"] → validate-with-xml-schema() ≫ [@1,$dates]
+   }
+}</programlisting>
+
+<para>but you can do this:</para>
+
+<programlisting>$in → {
+   let $dates := xs:dateTime($1/*/updated) {
+     $dates &gt;&gt; @2
+     [$1,"schema1.xsd"] → validate-with-xml-schema() ≫ @1
+   }
+}</programlisting>
+</section>
+
+<section xml:id="projections">
+<title>Projections</title>
+
+<para>A source can be turned into a sequence by an expression. The
+result is a port that contains a sequence of items.</para>
+<para>For example:</para>
+
+<programlisting>$in//section → count() ≫ $out</programlisting>
+
+<para>assigns the count of <literal>section</literal> element subtrees.</para>
+
+<note>
+<para>ndw: I still thinks it would be better to have a step that does
+this; then there can be an xpath() step, a jsonpath() step, a csv()
+step, etc. rather than building the semantics of projection into our
+expression language.</para>
+</note>
+</section>
+
+<section xml:id="iteration">
+<title>Iteration</title>
+
+<para>Iteration is a core operation and can be embedded within a step
+chain with the <literal>!</literal> operator. For example:</para>
+
+<programlisting>("d1.xml","d2.xml","d3.xml") ! { [$1,"schema.xsd"] → validate-with-xml-schema() ≫ @1}</programlisting>
+
+<para>validates the three documents contained in the sequence.</para>
+
+<para>The result of an iteration operation is a set of output bindings
+where the first binding contains all of the documents written to
+<literal>@1</literal>, the second all of the documents written to
+<literal>@2</literal>, etc.</para>
+</section>
+
+<section xml:id="replacement">
+<title>Replacement</title>
+<note>
+<para>formerly know as "viewports"</para>
+</note>
+
+<para>A portion of a document can be iterated over and replaced by an
+embedded step chain. The <literal>replace</literal> operator requires
+a single input, an expression, and a step chain body.</para>
+
+<para>For each subtree matched, the block expression is run with the
+subtree on the positional input port $1. The item on the positional
+output port @1 will be its replacement.</para>
+
+<para>It is an error if the block expression does not produce a
+replacement.</para>
+
+<note>
+<para>ndw: I think this error is in conflict with our earlier rule that attempting to
+read a port that wasn’t used returns the empty sequence. I think if step chain body
+doesn’t write to <literal>@1</literal>, the replacement is simply the empty sequence.</para>
+</note>
+
+<para>For example:</para>
+
+<programlisting>$in → replace (/doc/section) { [$1,"style.xsl"] → xslt() ≫ @1 } ≫ $out</programlisting>
+<para>applies XSLT over a subtree.</para>
+</section>
+
+<section xml:id="tee">
+<title>Tee</title>
+
+<para>A chain can have an alternate flow embedded within the chain
+using the tee operator (<literal>tee</literal> or
+<literal>⊤</literal>). The flow must be a block expression. The
+outputs following tee expression are exactly the same as if the tee
+operator had been omitted.</para>
+
+<para>In the following example, the result of the
+<step>xinclude</step> step is stored via an tee operator and that
+result is also transformed by the <step>xslt</step> step.</para>
+
+<programlisting>$in → xinclude() ⊤ { $1 ≫ "included.xml" }
+    → [$1,"stylesheet.xsl"] → xslt()
+    ≫ $out</programlisting>
+</section>
+
+<section xml:id="flow-declarations">
+<title>Flow Declarations</title>
+
+<para>A flow can named and reused:</para>
+
+<programlisting>flow my:process
+   inputs $source as document-node(),
+  outputs $result as document-node() {
+    $source → xinclude() → [$1,"stylesheet.xsl"] → xslt() ≫ $result
+ };</programlisting>
+<programlisting>"doc.xml" → my:process() ≫ "doc.html"</programlisting>
+</section>
+
+<section xml:id="xproc-modules">
+<title>XProc Modules</title>
+
+<para>XProc modules are top-level containers for reuse. Every XProc
+module must start with:</para>
+
+<programlisting>xproc version = "2.0";</programlisting>
+
+<para>A module consists of a version declaration (above), a set of
+declarations, and a single optional unnamed flow description.</para>
+
+<para>A module may end with a flow description. The inputs and outputs
+of that port must be provided by the implementation when the module is
+invoked.</para>
+
+<para>A module may import other declarations via the import statement:</para>
+
+<programlisting>import "library.xpl";</programlisting>
+
+<para>A module may import declarations in the expression language:</para>
+
+<programlisting>import "functions.xq";</programlisting>
+
+<para>A module may also declare options as parameters to the module.</para>
+
+<programlisting>option $user as xs:string;
+option $passwd as xs:string;</programlisting>
+
+<para>A must provide declarations for any undefined inputs and outputs
+to the flow:</para>
+
+<programlisting> inputs $source as document-node();
+outputs $result as document-node();</programlisting>
+</section>
+
+<appendix xml:id="grammar">
+<title>Grammar</title>
+<programlisting>XProc ::= XProcModule EOF
+
+XProcModule ::= XProcVersionDecl? XProcProlog XProcFlow?
+XProcVersionDecl ::= 'xproc' 'version' '=' StringLiteral XProcSeparator
+
+XProcProlog   ::= ( ( XProcDefaultNamespaceDecl | XProcNamespaceDecl | XProcImport ) XProcSeparator )*
+                  (XProcInputs XProcSeparator)?
+                  (XProcOutputs XProcSeparator)?
+                  (XProcOptionDecl XProcSeparator)*
+                  (XProcStepDecl XProcSeparator)*
+
+XProcImport ::= 'import' XProcURILiteral
+
+XProcInputs ::= 'inputs' XProcParamList
+
+XProcOutputs ::= 'outputs' XProcParamList
+
+XProcOptionDecl ::= 'option' XProcParam
+
+XProcStepDecl ::= 'step' FunctionName '(' XProcParamList? ')' XProcInputs? XProcOutputs?
+
+XProcFlow ::= XProcFlowStatement+
+
+XProcFlowStatement ::= ( XProcStepChain XProcOutputBinding? ) | XProcIfStatement | XProcLetStatement
+
+XProcStepChain ::= (XProcSequenceLiteral XProcStepChainItem+) |
+                   ((XProcStepInvocation | XProcBlockStatement) XProcStepChainItem*) 
+
+XProcStepChainItem ::= XProcChainedItem | XProcIteratedItem | XProcTeedItem | XProcReplacedItem
+
+XProcSequenceLiteral ::= XProcSequenceItem | '(' XProcSequenceItem ( ',' XProcSequenceItem )* ')'
+
+XProcSequenceItem ::= XProcURILiteral | XProcPortInput
+
+XProcChainedItem ::= XProcArrow XProcChainItem
+XProcIteratedItem ::= XProcIteration XProcBlockStatement
+XProcTeedItem ::= XProcTee XProcBlockStatement XProcChainedItem
+XProcReplacedItem ::= XProcReplace '(' PathExpr ')' XProcBlockStatement
+
+XProcChainItem ::=  XProcStepInvocation | XProcBlockStatement
+
+XProcArrow ::= '=&gt;' | '→'
+
+XProcIteration ::= '!'
+
+XProcTee ::= 'tee' | '⊤'
+
+XProcReplace ::= 'replace'
+
+XProcInputPortList ::= '[' XProcInputPortBinding ( ',' XProcInputPortBinding )* ']'
+
+XProcInputPortBinding ::= (QName '=')? XProcSequenceLiteral
+
+XProcInputOrdinal ::= '$' IntegerLiteral
+
+XProcOutputBinding ::= XProcAppend ( XProcOutputItem | XProcOutputPortList)
+
+XProcAppend ::= '&gt;&gt;' | '≫'
+
+XProcOutputItem ::= XProcURILiteral | XProcPortRef | XProcOutputOrdinal
+
+XProcOutputOrdinal ::= '@' IntegerLiteral
+
+XProcOutputPortList ::= '[' XProcOutputPortBinding ( ',' XProcOutputPortBinding) ']'
+
+XProcOutputPortBinding ::= (QName '=')? XProcOutputItem
+
+XProcPortInput ::= ( XProcPortRef | XProcInputOrdinal ) XProcProjection?
+
+XProcPortRef ::= '$' QName 
+
+XProcProjection ::= '/' ( RelativePathExpr / ) | '//' RelativePathExpr
+
+XProcStepInvocation ::= (XProcInputPortList XProcArrow)? XProcStepName XProcArgumentList
+
+XProcStepName ::= QName
+
+XProcArgumentList ::= ArgumentList
+
+XProcBlockStatement ::= '{' XProcFlow? '}'
+
+XProcIfStatement ::= 'if' '(' ExprSingle ')' 'then' XProcFlowStatement 'else' XProcFlowStatement
+
+XProcLetStatement ::= 'let' XProcLetBinding ( ',' XProcLetBinding )*  XProcLetBody
+
+XProcLetBody ::= XProcBlockStatement
+
+XProcLetBinding
+         ::= '$' VarName XProcTypeDeclaration? ':=' ExprSingle
+
+XProcNamespaceDecl
+         ::= 'declare' 'namespace' NCName '=' XProcURILiteral
+XProcDefaultNamespaceDecl
+         ::= 'declare' 'default' 'namespace' XProcURILiteral
+
+XProcParamList
+         ::= XProcParam ( ',' XProcParam )*
+
+XProcParam    ::= '$' QName XProcTypeDeclaration?
+
+XProcTypeDeclaration ::= 'as' SequenceType
+
+XProcSeparator ::= ';'
+
+XProcURILiteral ::= StringLiteral
+
+
+
+Expr     ::= ExprSingle ( ',' ExprSingle )*
+ExprSingle ::= OrExpr
+
+OrExpr   ::= AndExpr ( 'or' AndExpr )*
+AndExpr  ::= ComparisonExpr ( 'and' ComparisonExpr )*
+ComparisonExpr
+         ::= StringConcatExpr ( ( ValueComp | GeneralComp | NodeComp ) StringConcatExpr )?
+StringConcatExpr
+         ::= RangeExpr ( '||' RangeExpr )*
+RangeExpr
+         ::= AdditiveExpr ( 'to' AdditiveExpr )?
+AdditiveExpr
+         ::= MultiplicativeExpr ( ( '+' | '-' ) MultiplicativeExpr )*
+MultiplicativeExpr
+         ::= UnionExpr ( ( '*' | 'div' | 'idiv' | 'mod' ) UnionExpr )*
+UnionExpr
+         ::= IntersectExceptExpr ( ( 'union' | '|' ) IntersectExceptExpr )*
+IntersectExceptExpr
+         ::= InstanceofExpr ( ( 'intersect' | 'except' ) InstanceofExpr )*
+InstanceofExpr
+         ::= TreatExpr ( 'instance' 'of' SequenceType )?
+TreatExpr
+         ::= CastableExpr ( 'treat' 'as' SequenceType )?
+CastableExpr
+         ::= CastExpr ( 'castable' 'as' SingleType )?
+CastExpr ::= UnaryExpr ( 'cast' 'as' SingleType )?
+UnaryExpr
+         ::= ( '-' | '+' )* ValueExpr
+ValueExpr
+         ::= SimpleMapExpr
+GeneralComp
+         ::= '='
+           | '!='
+           | '&lt;'
+           | '&lt;='
+           | '&gt;'
+           | '&gt;='
+ValueComp
+         ::= 'eq'
+           | 'ne'
+           | 'lt'
+           | 'le'
+           | 'gt'
+           | 'ge'
+NodeComp ::= 'is'
+           | '&lt;&lt;'
+           | '&gt;&gt;'
+           
+SimpleMapExpr
+         ::= PathExpr ( '!' PathExpr )*
+PathExpr ::= '/' ( RelativePathExpr / )
+           | '//' RelativePathExpr
+           | RelativePathExpr
+RelativePathExpr
+         ::= StepExpr ( ( '/' | '//' ) StepExpr )*
+StepExpr ::= PostfixExpr
+           | AxisStep
+AxisStep ::= ( ReverseStep | ForwardStep ) PredicateList
+ForwardStep
+         ::= ForwardAxis NodeTest
+           | AbbrevForwardStep
+ForwardAxis
+         ::= 'child' '::'
+           | 'descendant' '::'
+           | 'attribute' '::'
+           | 'self' '::'
+           | 'descendant-or-self' '::'
+           | 'following-sibling' '::'
+           | 'following' '::'
+AbbrevForwardStep
+         ::= '@'? NodeTest
+ReverseStep
+         ::= ReverseAxis NodeTest
+           | AbbrevReverseStep
+ReverseAxis
+         ::= 'parent' '::'
+           | 'ancestor' '::'
+           | 'preceding-sibling' '::'
+           | 'preceding' '::'
+           | 'ancestor-or-self' '::'
+AbbrevReverseStep
+         ::= '..'
+NodeTest ::= KindTest
+           | NameTest
+NameTest ::= EQName
+           | Wildcard
+PostfixExpr
+         ::= PrimaryExpr ( Predicate | ArgumentList )*
+ArgumentList
+         ::= '(' ( Argument ( ',' Argument )* )? ')'
+PredicateList
+         ::= Predicate*
+Predicate
+         ::= '[' Expr ']'
+
+PrimaryExpr
+         ::= Literal
+           | VarRef
+           | XProcInputOrdinal
+           | ParenthesizedExpr
+           | ContextItemExpr
+           | FunctionCall
+
+ParenthesizedExpr
+         ::= '(' Expr? ')'
+ContextItemExpr
+         ::= '.'
+
+FunctionCall
+         ::= FunctionName ArgumentList
+
+Literal  ::= NumericLiteral
+           | StringLiteral
+NumericLiteral
+         ::= IntegerLiteral
+           | DecimalLiteral
+           | DoubleLiteral
+VarRef   ::= '$' VarName
+VarName  ::= EQName
+
+Argument ::= ExprSingle
+           | ArgumentPlaceholder
+ArgumentPlaceholder
+         ::= '?'
+
+
+EQName   ::= QName
+           | URIQualifiedName
+
+SingleType
+         ::= SimpleTypeName '?'?
+SequenceType
+         ::= ItemType ( OccurrenceIndicator / )
+OccurrenceIndicator
+         ::= '?'
+           | '*'
+           | '+'
+ItemType ::= KindTest
+           | 'item' '(' ')'
+           | MapTest
+           | ArrayTest
+           | AtomicOrUnionType
+           | ParenthesizedItemType
+AtomicOrUnionType
+         ::= EQName
+
+KindTest ::= DocumentTest
+           | ElementTest
+           | AttributeTest
+           | PITest
+           | CommentTest
+           | TextTest
+           | NamespaceNodeTest
+           | AnyKindTest
+AnyKindTest
+         ::= 'node' '(' ')'
+DocumentTest
+         ::= 'document-node' '(' ElementTest? ')'
+TextTest ::= 'text' '(' ')'
+CommentTest
+         ::= 'comment' '(' ')'
+NamespaceNodeTest
+         ::= 'namespace-node' '(' ')'
+PITest   ::= 'processing-instruction' '(' ( NCName | StringLiteral )? ')'
+AttributeTest
+         ::= 'attribute' '(' ( AttribNameOrWildcard ( ',' TypeName )? )? ')'
+AttribNameOrWildcard
+         ::= AttributeName
+           | '*'
+ElementTest
+         ::= 'element' '(' ( ElementNameOrWildcard ( ',' TypeName '?'? )? )? ')'
+ElementNameOrWildcard
+         ::= ElementName
+           | '*'
+AttributeName
+         ::= EQName
+ElementName
+         ::= EQName
+SimpleTypeName
+         ::= TypeName
+TypeName ::= EQName
+
+MapTest  ::= AnyMapTest
+           | TypedMapTest
+AnyMapTest
+         ::= 'map' '(' '*' ')'
+TypedMapTest
+         ::= 'map' '(' AtomicOrUnionType ',' SequenceType ')'
+ArrayTest
+         ::= AnyArrayTest
+           | TypedArrayTest
+AnyArrayTest
+         ::= 'array' '(' '*' ')'
+TypedArrayTest
+         ::= 'array' '(' SequenceType ')'
+ParenthesizedItemType
+         ::= '(' ItemType ')'
+
+QName    ::= FunctionName
+           
+FunctionName
+         ::= QName^Token
+
+NCName   ::= NCName^Token
+
+Whitespace
+    ::= S^WS | Comment
+    /* ws: definition */
+
+Comment
+    ::= '(:' ( CommentContents | Comment )* ':)'
+    /* ws: explicit */
+
+
+IntegerLiteral
+         ::= Digits
+DecimalLiteral
+         ::= '.' Digits
+           | Digits '.' [0-9]*
+          /* ws: explicit */
+DoubleLiteral
+         ::= ( '.' Digits | Digits ( '.' [0-9]* )? ) [eE] [+#x002D]? Digits
+          /* ws: explicit */
+StringLiteral
+         ::= '"' ( PredefinedEntityRef | CharRef | EscapeQuot | [^"&amp;] )* '"'
+           | "'" ( PredefinedEntityRef | CharRef | EscapeApos | [^'&amp;] )* "'"
+          /* ws: explicit */
+URIQualifiedName
+         ::= BracedURILiteral NCName
+          /* ws: explicit */
+BracedURILiteral
+         ::= 'Q' '{' ( PredefinedEntityRef | CharRef | [^&amp;{}] )* '}'
+          /* ws: explicit */
+PredefinedEntityRef
+         ::= '&amp;' ( 'lt' | 'gt' | 'amp' | 'quot' | 'apos' ) ';'
+          /* ws: explicit */
+EscapeQuot
+         ::= '""'
+EscapeApos
+         ::= "''"
+NameStartChar
+         ::= ':'
+           | [A-Z]
+           | '_'
+           | [a-z]
+           | [#x00C0-#x00D6]
+           | [#x00D8-#x00F6]
+           | [#x00F8-#x02FF]
+           | [#x0370-#x037D]
+           | [#x037F-#x1FFF]
+           | [#x200C-#x200D]
+           | [#x2070-#x218F]
+           | [#x2C00-#x2FEF]
+           | [#x3001-#xD7FF]
+           | [#xF900-#xFDCF]
+           | [#xFDF0-#xFFFD]
+           | [#x10000-#xEFFFF]
+NameChar ::= NameStartChar
+           | '-'
+           | '.'
+           | [0-9]
+           | #x00B7
+           | [#x0300-#x036F]
+           | [#x203F-#x2040]
+Name     ::= NameStartChar NameChar*
+CharRef  ::= '&amp;#' [0-9]+ ';'
+           | '&amp;#x' [0-9a-fA-F]+ ';'
+NCName   ::= Name - ( Char* ':' Char* )
+QName    ::= PrefixedName
+           | UnprefixedName
+PrefixedName
+         ::= Prefix ':' LocalPart
+UnprefixedName
+         ::= LocalPart
+Prefix   ::= NCName
+LocalPart
+         ::= NCName
+S        ::= ( #x0020 | #x0009 | #x000D | #x000A )+
+Char     ::= #x0009
+           | #x000A
+           | #x000D
+           | [#x0020-#xD7FF]
+           | [#xE000-#xFFFD]
+           | [#x10000-#x10FFFF]
+Digits   ::= [0-9]+
+CommentContents
+         ::= ( ( Char+ - ( Char* ( '(:' | ':)' ) Char* ) ) - ( Char* '(' ) ) &amp;':'
+           | ( Char+ - ( Char* ( '(:' | ':)' ) Char* ) ) &amp;'('
+EOF      ::= $
+Wildcard ::= '*'
+           | NCName ':' '*'
+           | '*' ':' NCName
+           | BracedURILiteral '*'</programlisting>
+</appendix>
+
+</specification>
