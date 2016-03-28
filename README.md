@@ -16,7 +16,7 @@ editors' repositories:
 
 * Norman Walsh, https://ndw.github.io/specification/
 * Alex Miłowski, https://alexmilowski.github.io/specification/
-* James Fuller, https://xquery.github.io/specification/
+* James Fuller, http://xquery.github.io/specification/langspec/xproc20/Overview.html
 
 If you're interested in contributing to the specification, you can
 do so by way of [a pull request](https://help.github.com/articles/creating-a-pull-request).
